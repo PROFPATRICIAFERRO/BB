@@ -1,21 +1,12 @@
 // Variáveis globais
-let fase = 0;
+let fase = 0;  // controla a fase atual do jogo
 let nomeJogador = "";
 let inputNome;
 let botaoComecar;
-let textoInicialX;
+let textoInicialX;  // posição X do texto animado na tela inicial
 let tempoPiscar = 0;
 let falaAtual = 0;
-// Imagens que serão carregadas
-let imgCity, imgFeira, imgAgrinho, imgColegio;
 
-function preload() {
-  // Carrega as imagens necessárias
-  imgCity = loadImage('city.jpg');
-  imgFeira = loadImage('feira.jpg');
-  imgAgrinho = loadImage('agrinho.jpg');
-  imgColegio = loadImage('colegio.jpg');
-}
 // Falas da Fase 1
 const falasFase1 = [
   "Olá! Sou Maria e seja bem-vindo(a), qual é o seu nome?",
@@ -29,7 +20,7 @@ const falasFase1 = [
   "Quando conseguir 10 pontos pegando garrafas PET, passamos para a próxima etapa, clique em vamos começar!"
 ];
 
-// Variáveis da Fase 2
+// --- Variáveis da Fase 2 ---
 let pontos = 0;
 let objetosCaindo = [];
 let cestoX;
@@ -44,7 +35,6 @@ const objetoTipos = [
 ];
 
 // Variáveis para Fase 3
-let fase3Iniciada = false;
 let caminhaoX;
 let caminhaoY;
 let falasFase3 = [
@@ -56,7 +46,7 @@ let mostrandoFala3 = true;
 let caminhaoVel = 3;
 let fala3Terminou = false;
 
-// Variáveis para Fase 3.5
+// Novas variáveis para Fase 3.5
 let tempoCaminhando = 0;
 let cenarioMudou = false;
 let falasFase3_5 = [
@@ -87,8 +77,9 @@ function setup() {
   createCanvas(800, 600);
   textFont('Arial');
 
-  textoInicialX = width;
+  textoInicialX = width; // começa o texto no canto direito
 
+  // Criar input e botão na Fase 1
   inputNome = createInput();
   inputNome.position(width/2 - 100, height/2 + 50);
   inputNome.size(200, 30);
@@ -106,7 +97,9 @@ function setup() {
   botaoComecar.hide();
 
   cestoX = width / 2;
-  caminhaoX = -200;
+  
+  // Inicializa variáveis da fase 3
+  caminhaoX = -200; // começa fora da tela à esquerda
   caminhaoY = height - 120;
 }
 
@@ -128,6 +121,7 @@ function draw() {
   }
 }
 
+// Fase 0 - Tela inicial
 function fase0() {
   background(0, 0, 128);
   fill(255);
@@ -135,20 +129,14 @@ function fase0() {
   textAlign(LEFT, CENTER);
   textStyle(BOLD);
 
+  // Texto animado da direita para esquerda
   text("Agrinho: Campoliga Cresce com Você", textoInicialX, height / 2);
   textoInicialX -= 3;
   if (textoInicialX < -500) {
     textoInicialX = width;
   }
-  
-// Exibe logos no topo da tela
-  if (imgColegio) {
-    image(imgColegio, 20, 20, 150, 60); // Canto superior esquerdo
-  }
-  if (imgAgrinho) {
-    image(imgAgrinho, width - 170, 20, 150, 60); // Canto superior direito
-  }
-  
+
+  // Botão "COMEÇAR" piscando
   tempoPiscar++;
   if (tempoPiscar % 60 < 30) {
     fill(255);
@@ -159,6 +147,7 @@ function fase0() {
     text("COMEÇAR", width/2, height/2 + 130);
   }
 
+  // Detectar clique no botão
   if (mouseIsPressed) {
     if (mouseX > width/2 - 100 && mouseX < width/2 + 100 &&
         mouseY > height/2 + 100 && mouseY < height/2 + 160) {
@@ -177,17 +166,13 @@ function delayInputShow() {
   }, 200);
 }
 
+// Fase 1 - Apresentação e introdução
 function fase1() {
-  // Fundo com imagem da cidade
-  if (imgCity) {
-    image(imgCity, 0, 0, width, height);
-  } else {
-    background(100, 149, 237); // fallback se imagem não carregar
-    desenharPredios();
-  }
+  background(100, 149, 237);
 
-  // Desenha chão cinza (faixa na parte inferior)
-  fill(150); // cinza
+  desenharPredios();
+
+  fill(150);
   rect(0, height - 100, width, 100);
 
   desenharMaria(150, height - 150);
@@ -287,6 +272,7 @@ function desenharPredios() {
   ellipse(665, height - 180, 100, 80);
 }
 
+// --- Funções da Fase 2 ---
 function iniciarFase2() {
   pontos = 0;
   objetosCaindo = [];
@@ -354,6 +340,7 @@ function fase2() {
   }
 }
 
+// Fase 3 - Transporte para o campo
 function iniciarFase3() {
   falaAtual3 = 0;
   mostrandoFala3 = true;
@@ -428,6 +415,7 @@ function fase3() {
   }
 }
 
+// Fase 3.5 - Maria no campo com Joaquim
 function fase3_5() {
   if (tempoCaminhando < 120) {
     background(135, 206, 250);
@@ -524,6 +512,7 @@ function desenharJoaquim(x, y) {
   rect(x - 25, y - 50, 50, 70, 5);
 }
 
+// Fase 4 - Colheita de verduras
 function iniciarFase4() {
   verduras = [];
   verdurasColhidas = 0;
@@ -572,25 +561,22 @@ function fase4() {
   }
 }
 
+// Fase Final - Feira
 function faseFinal() {
-  // Fundo com imagem da feira
-  if (imgFeira) {
-    image(imgFeira, 0, 0, width, height);
-  } else {
-    // Céu com fogos (fallback se imagem não carregar)
-    background(173, 216, 230);
-    
-    // Chão
-    fill(34, 139, 34);
-    rect(0, height - 100, width, 100);
-    
-    // Barracas de feira
-    fill(200, 0, 0);
-    rect(100, height - 200, 100, 100);
-    rect(300, height - 180, 80, 80);
-    rect(500, height - 220, 120, 120);
-  }
+  background(173, 216, 230);
   
+  fill(34, 139, 34);
+  rect(0, height - 100, width, 100);
+  
+  fill(200, 0, 0);
+  rect(100, height - 200, 100, 100);
+  rect(300, height - 180, 80, 80);
+  rect(500, height - 220, 120, 120);
+  
+  fill(255);
+  for (let i = 0; i < 5; i++) {
+    ellipse(150 + i*100, height - 150, 20, 20);
+  }
   
   desenharMaria(250, height - 150);
   desenharJoaquim(400, height - 150);
