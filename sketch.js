@@ -1,22 +1,11 @@
 // Variáveis globais
-let fase = 0;  // controla a fase atual do jogo
+let fase = 0;
 let nomeJogador = "";
 let inputNome;
 let botaoComecar;
-let textoInicialX;  // posição X do texto animado na tela inicial
+let textoInicialX;
 let tempoPiscar = 0;
 let falaAtual = 0;
-
-// Imagens que serão carregadas
-let imgCity, imgFeira, imgAgrinho, imgColegio;
-
-function preload() {
-  // Carrega as imagens necessárias
-  imgCity = loadImage('city.jpg');
-  imgFeira = loadImage('feira.jpg');
-  imgAgrinho = loadImage('agrinho.jpg');
-  imgColegio = loadImage('colegio.jpg');
-}
 
 // Falas da Fase 1
 const falasFase1 = [
@@ -31,7 +20,7 @@ const falasFase1 = [
   "Quando conseguir 10 pontos pegando garrafas PET, passamos para a próxima etapa, clique em vamos começar!"
 ];
 
-// --- Variáveis da Fase 2 ---
+// Variáveis da Fase 2
 let pontos = 0;
 let objetosCaindo = [];
 let cestoX;
@@ -49,7 +38,6 @@ const objetoTipos = [
 let fase3Iniciada = false;
 let caminhaoX;
 let caminhaoY;
-let falaMostrada = false;
 let falasFase3 = [
   "Ótimo trabalho! Podemos reciclar e reutilizar qualquer lixo. O lixo orgânico vira compostagem para o campo, por exemplo, mas nessa aventura pegamos as garrafas PET. Agora vou levar essas garrafas recicláveis para o campo!",
   "O que parece lixo para uns, podemos transformar e dar uma nova vida para ele. A cidade ajuda o campo, e o campo ajuda a cidade. Juntos ajudamos o mundo. Isso é cooperação!"
@@ -59,7 +47,7 @@ let mostrandoFala3 = true;
 let caminhaoVel = 3;
 let fala3Terminou = false;
 
-// Novas variáveis para Fase 3.5
+// Variáveis para Fase 3.5
 let tempoCaminhando = 0;
 let cenarioMudou = false;
 let falasFase3_5 = [
@@ -85,15 +73,13 @@ let falasFaseFinal = [
   "Isso é celebrar a cooperação! Isso é fazer parte de uma comunidade que cresce unida!"
 ];
 let falaAtualFinal = 0;
-let tempoFalaFinal = 0;
 
 function setup() {
   createCanvas(800, 600);
   textFont('Arial');
 
-  textoInicialX = width; // começa o texto no canto direito
+  textoInicialX = width;
 
-  // Criar input e botão na Fase 1, mas só mostrar quando for necessário
   inputNome = createInput();
   inputNome.position(width/2 - 100, height/2 + 50);
   inputNome.size(200, 30);
@@ -103,7 +89,7 @@ function setup() {
   botaoComecar.position(width/2 - 60, height/2 + 50);
   botaoComecar.size(120, 40);
   botaoComecar.mousePressed(() => {
-    fase = 2; // Vai para fase 2 após clicar no botão
+    fase = 2;
     inputNome.hide();
     botaoComecar.hide();
     iniciarFase2();
@@ -111,9 +97,7 @@ function setup() {
   botaoComecar.hide();
 
   cestoX = width / 2;
-  
-  // Inicializa variáveis da fase 3
-  caminhaoX = -200; // começa fora da tela à esquerda
+  caminhaoX = -200;
   caminhaoY = height - 120;
 }
 
@@ -130,12 +114,11 @@ function draw() {
     fase3_5();
   } else if (fase === 4) {
     fase4();
-  } else if (fase === 5) { // Fase Final
+  } else if (fase === 5) {
     faseFinal();
   }
 }
 
-// Fase 0 - Tela inicial
 function fase0() {
   background(0, 0, 128);
   fill(255);
@@ -143,22 +126,12 @@ function fase0() {
   textAlign(LEFT, CENTER);
   textStyle(BOLD);
 
-  // Texto animado da direita para esquerda
   text("Agrinho: Campoliga Cresce com Você", textoInicialX, height / 2);
   textoInicialX -= 3;
-  if (textoInicialX < -500) { // quando sair da tela, reseta
+  if (textoInicialX < -500) {
     textoInicialX = width;
   }
 
-  // Exibe logos no topo da tela
-  if (imgColegio) {
-    image(imgColegio, 20, 20, 150, 60); // Canto superior esquerdo
-  }
-  if (imgAgrinho) {
-    image(imgAgrinho, width - 170, 20, 150, 60); // Canto superior direito
-  }
-
-  // Botão "COMEÇAR" piscando
   tempoPiscar++;
   if (tempoPiscar % 60 < 30) {
     fill(255);
@@ -169,12 +142,11 @@ function fase0() {
     text("COMEÇAR", width/2, height/2 + 130);
   }
 
-  // Detectar clique no botão
   if (mouseIsPressed) {
     if (mouseX > width/2 - 100 && mouseX < width/2 + 100 &&
         mouseY > height/2 + 100 && mouseY < height/2 + 160) {
       fase = 1;
-      textoInicialX = width; // reset texto inicial para caso voltar
+      textoInicialX = width;
       delayInputShow();
     }
   }
@@ -188,62 +160,49 @@ function delayInputShow() {
   }, 200);
 }
 
-// Fase 1 - Apresentação e introdução
 function fase1() {
-  // Fundo com imagem da cidade
-  if (imgCity) {
-    image(imgCity, 0, 0, width, height);
-  } else {
-    background(100, 149, 237); // fallback se imagem não carregar
-    desenharPredios();
-  }
+  background(100, 149, 237);
+  desenharPredios();
 
-  // Desenha chão cinza (faixa na parte inferior)
-  fill(150); // cinza
+  fill(150);
   rect(0, height - 100, width, 100);
 
-  desenharMaria(150, height - 150); // Maria "em pé" no chão
+  desenharMaria(150, height - 150);
 
   fill(255);
-  rect(100, 400, 600, 150, 20); // balão de fala fundo branco
+  rect(100, 400, 600, 150, 20);
   fill(0);
   textSize(22);
   textAlign(LEFT, TOP);
 
-  // Mostrar a fala atual
   let fala = falasFase1[falaAtual];
   if (typeof fala === "function") {
     fala = fala(nomeJogador);
   }
   text(fala, 120, 420, 560, 120);
 
-  // Se estamos na fala da pergunta do nome, mostrar input
   if (falaAtual === 0) {
     inputNome.show();
   } else {
     inputNome.hide();
   }
 
-  // Aviso para clicar na seta só se já passou da fala 0
   if (falaAtual > 0 && falaAtual < falasFase1.length) {
     fill(255);
     textAlign(CENTER);
     textSize(18);
     text("Clique na seta para passar a conversa", width / 2, 60);
   } else if (falaAtual === 0) {
-    // No início (fala 0), avisa para digitar nome e apertar Enter
     fill(255);
     textAlign(CENTER);
     textSize(18);
     text("Digite seu nome e pressione Enter para continuar", width / 2, 60);
   }
 
-  // Mostrar seta para avançar fala (exceto quando está na fala 0, que espera o input)
   if (falaAtual > 0) {
     desenharSetaAvancar(width - 100, 500);
   }
 
-  // Botão "Vamos começar" aparece só na última fala
   if (falaAtual === falasFase1.length - 1) {
     botaoComecar.show();
   } else {
@@ -251,25 +210,19 @@ function fase1() {
   }
 }
 
-// Desenha a seta para avançar
 function desenharSetaAvancar(x, y) {
   fill(0);
   noStroke();
-  // Triângulo seta para direita
   triangle(x, y - 20, x, y + 20, x + 30, y);
 }
 
-// Desenhar personagem Maria simples com formas geométricas
 function desenharMaria(x, y) {
-  // Corpo
-  fill(255, 192, 203); // rosa claro vestido
+  fill(255, 192, 203);
   rect(x - 110, y - 50, 60, 100, 20);
 
-  // Cabeça
-  fill(255, 224, 189); // cor de pele
+  fill(255, 224, 189);
   ellipse(x -83, y -80, 80, 80);
 
-  // Olhos
   fill(255);
   ellipse(x -83 - 20, y - 90, 25, 15);
   ellipse(x -83 + 20, y - 90, 25, 15);
@@ -277,13 +230,11 @@ function desenharMaria(x, y) {
   ellipse(x -83 - 20, y - 90, 10, 10);
   ellipse(x -83 + 20, y - 90, 10, 10);
 
-  // Boca
   noFill();
   stroke(255, 0, 0);
   strokeWeight(3);
   arc(x -83, y - 65, 40, 30, 0, PI);
 
-  // Cabelos simples (curto)
   noStroke();
   fill(139, 69, 19);
   arc(x -83, y - 110, 70, 70, PI, TWO_PI);
@@ -292,7 +243,6 @@ function desenharMaria(x, y) {
   strokeWeight(1);
 }
 
-// Desenhar prédios da cidade simples
 function desenharPredios() {
   fill(70);
   for (let i = 0; i < width; i += 100) {
@@ -305,23 +255,18 @@ function desenharPredios() {
     fill(70);
   }
   
-  // Adiciona calçada e árvore conforme solicitado
   fill(200);
-  rect(0, height - 50, width, 20); // Calçada
+  rect(0, height - 50, width, 20);
   
-  // Árvore
   fill(139, 69, 19);
-  rect(650, height - 150, 30, 100); // Tronco
+  rect(650, height - 150, 30, 100);
   fill(0, 100, 0);
-  ellipse(665, height - 180, 100, 80); // Copa da árvore
+  ellipse(665, height - 180, 100, 80);
 }
-
-// --- Funções da Fase 2 ---
 
 function iniciarFase2() {
   pontos = 0;
   objetosCaindo = [];
-  // Inicializa com alguns objetos caindo
   for (let i = 0; i < 5; i++) {
     criarObjetoCaindo();
   }
@@ -341,50 +286,38 @@ function criarObjetoCaindo() {
 }
 
 function fase2() {
-  background(100, 149, 237); // Fundo azul claro da cidade
+  background(100, 149, 237);
   desenharPredios();
 
-  // Desenha chão cinza (faixa na parte inferior)
   fill(150);
   rect(0, height - 100, width, 100);
 
-  // Atualiza posição do cesto para o mouse (limitado na tela)
   cestoX = constrain(mouseX, cestoWidth / 2, width - cestoWidth / 2);
 
-  // Desenha o cesto (emoji 🗑️)
   textSize(50);
   textAlign(CENTER, CENTER);
   text('🗑️', cestoX, cestoY);
 
-  // Desenha e atualiza objetos caindo
   for (let i = objetosCaindo.length -1; i >= 0; i--) {
     let obj = objetosCaindo[i];
     textSize(40);
     text(obj.emoji, obj.x, obj.y);
     obj.y += obj.velocidade;
 
-    // Checar colisão com o cesto
     if (obj.y > cestoY - cestoHeight/2 && obj.y < cestoY + cestoHeight/2) {
       if (obj.x > cestoX - cestoWidth/2 && obj.x < cestoX + cestoWidth/2) {
-        // Capturou o objeto
         pontos += obj.pontos;
-        // Limita o mínimo de pontos para 0
         if (pontos < 0) pontos = 0;
 
-        // Remove objeto capturado
         objetosCaindo.splice(i, 1);
-
-        // Cria um novo objeto para substituir
         criarObjetoCaindo();
       }
     } else if (obj.y > height) {
-      // Remove objeto que caiu no chão
       objetosCaindo.splice(i, 1);
       criarObjetoCaindo();
     }
   }
 
-  // Mostrar pontuação no canto superior esquerdo
   fill(0);
   rect(10, 10, 150, 50, 10);
   fill(255);
@@ -392,14 +325,12 @@ function fase2() {
   textAlign(LEFT, CENTER);
   text("Pontos: " + pontos, 20, 35);
 
-  // Se atingir 10 pontos, avança para fase 3
   if (pontos >= 10) {
     fase = 3;
     iniciarFase3();
   }
 }
 
-// Fase 3 - Transporte para o campo
 function iniciarFase3() {
   falaAtual3 = 0;
   mostrandoFala3 = true;
@@ -409,9 +340,8 @@ function iniciarFase3() {
 }
 
 function fase3() {
-  background(135, 206, 250); // Céu azul
+  background(135, 206, 250);
 
-  // Desenha chão preto com faixas brancas da estrada
   fill(0);
   rect(0, height - 160, width, 160);
 
@@ -421,24 +351,19 @@ function fase3() {
     rect(i * espacamento + (caminhaoX % espacamento), height - 120, 40, 20, 5);
   }
 
-  // Desenhar caminhão como um retângulo vermelho simples com Maria dentro
   fill(255, 0, 0);
   rect(caminhaoX, caminhaoY, 150, 70, 10);
   fill(0);
-  ellipse(caminhaoX + 30, caminhaoY + 70, 40, 40); // roda 1
-  ellipse(caminhaoX + 120, caminhaoY + 70, 40, 40); // roda 2
+  ellipse(caminhaoX + 30, caminhaoY + 70, 40, 40);
+  ellipse(caminhaoX + 120, caminhaoY + 70, 40, 40);
 
-  // Desenhar Maria dentro do caminhão (apenas quando estiver em movimento)
   if (!mostrandoFala3) {
-    // Cabeça da Maria
     fill(255, 224, 189);
     ellipse(caminhaoX + 75, caminhaoY - 10, 30, 30);
     
-    // Cabelo
     fill(139, 69, 19);
     arc(caminhaoX + 75, caminhaoY - 20, 30, 30, PI, TWO_PI);
     
-    // Olhos
     fill(255);
     ellipse(caminhaoX + 65, caminhaoY - 15, 8, 5);
     ellipse(caminhaoX + 85, caminhaoY - 15, 8, 5);
@@ -446,19 +371,15 @@ function fase3() {
     ellipse(caminhaoX + 65, caminhaoY - 15, 3, 3);
     ellipse(caminhaoX + 85, caminhaoY - 15, 3, 3);
     
-    // Boca sorrindo
     noFill();
     stroke(0);
     strokeWeight(2);
     arc(caminhaoX + 75, caminhaoY - 5, 15, 10, 0, PI);
   }
 
-  // Mostrar balão de fala da Maria (quando ela ainda não está no caminhão)
   if (mostrandoFala3) {
-    // Desenha Maria parada no lado esquerdo
     desenharMaria(150, height - 150);
     
-    // Balão de fala
     fill(255);
     rect(50, 50, 700, 100, 20);
     fill(0);
@@ -466,16 +387,13 @@ function fase3() {
     textAlign(LEFT, TOP);
     text(falasFase3[falaAtual3], 70, 70, 660, 80);
 
-    // Desenha seta para avançar fala (incluindo na última fala)
     desenharSetaAvancar(750, 130);
   }
 
-  // Atualiza posição do caminhão para direita até sair da tela
   if (!mostrandoFala3 && !fala3Terminou) {
     caminhaoX += caminhaoVel;
   }
 
-  // Se caminhão sair da tela, permite avançar para próxima fase
   if (caminhaoX > width) {
     fala3Terminou = true;
     fill(255);
@@ -487,10 +405,8 @@ function fase3() {
   }
 }
 
-// Fase 3.5 - Maria no campo com Joaquim
 function fase3_5() {
-  // Animação do caminhão por 2 segundos
-  if (tempoCaminhando < 120) { // 60 frames = 1 segundo
+  if (tempoCaminhando < 120) {
     background(135, 206, 250);
     fill(0);
     rect(0, height - 160, width, 160);
@@ -507,7 +423,6 @@ function fase3_5() {
     ellipse(caminhaoX + 30, caminhaoY + 70, 40, 40);
     ellipse(caminhaoX + 120, caminhaoY + 70, 40, 40);
     
-    // Maria no caminhão
     fill(255, 224, 189);
     ellipse(caminhaoX + 75, caminhaoY - 10, 30, 30);
     fill(139, 69, 19);
@@ -518,34 +433,29 @@ function fase3_5() {
   } 
   else {
     if (!cenarioMudou) {
-      // Muda o cenário após 2 segundos
-      background(173, 216, 230); // Azul claro
-      fill(34, 139, 34); // Verde
+      background(173, 216, 230);
+      fill(34, 139, 34);
       rect(0, height - 100, width, 100);
       
-      // Desenha árvores e estufa
-      fill(139, 69, 19); // Marrom tronco
+      fill(139, 69, 19);
       rect(100, height - 200, 30, 100);
       rect(300, height - 180, 30, 80);
-      fill(0, 100, 0); // Verde folhas
+      fill(0, 100, 0);
       ellipse(115, height - 220, 80, 80);
       ellipse(315, height - 200, 70, 70);
       
-      // Estufa
       fill(200, 200, 200, 150);
       rect(500, height - 250, 150, 150);
       fill(150, 150, 150);
       line(500, height - 250, 575, height - 300);
       line(650, height - 250, 575, height - 300);
       
-      // Desenha Maria e Joaquim
       desenharMaria(200, height - 150);
       desenharJoaquim(350, height - 150);
       
       cenarioMudou = true;
     }
     
-    // Mostrar diálogos com Joaquim
     fill(255);
     rect(150, 100, 500, 120, 20);
     fill(0);
@@ -558,11 +468,9 @@ function fase3_5() {
     }
     text(falaAtual, 170, 120, 460, 100);
     
-    // Mostrar seta para avançar
     if (falaAtual3_5 < falasFase3_5.length - 1) {
       desenharSetaAvancar(650, 190);
     } else {
-      // Botão para começar fase 4
       fill(100, 200, 100);
       rect(width/2 - 100, 250, 200, 50, 10);
       fill(255);
@@ -573,37 +481,30 @@ function fase3_5() {
 }
 
 function desenharJoaquim(x, y) {
-  // Chapéu
   fill(139, 69, 19);
   rect(x - 20, y - 100, 40, 10);
   rect(x - 15, y - 120, 30, 20);
   
-  // Cabeça
   fill(210, 180, 140);
   ellipse(x, y - 70, 50, 50);
   
-  // Olhos
   fill(0);
   ellipse(x - 10, y - 80, 5, 5);
   ellipse(x + 10, y - 80, 5, 5);
   
-  // Boca sorrindo
   noFill();
   stroke(0);
   strokeWeight(2);
   arc(x, y - 60, 20, 10, 0, PI);
   
-  // Corpo
   fill(70, 130, 180);
   rect(x - 25, y - 50, 50, 70, 5);
 }
 
-// Fase 4 - Colheita de verduras
 function iniciarFase4() {
   verduras = [];
   verdurasColhidas = 0;
   
-  // Cria 15 verduras em posições aleatórias
   for (let i = 0; i < 15; i++) {
     verduras.push({
       x: random(50, width - 50),
@@ -615,14 +516,12 @@ function iniciarFase4() {
 }
 
 function fase4() {
-  background(144, 238, 144); // Fundo verde claro para campo
+  background(144, 238, 144);
   
-  // Desenha canteiros
-  fill(139, 69, 19); // Marrom terra
+  fill(139, 69, 19);
   rect(100, height - 200, 200, 100, 10);
   rect(400, height - 180, 200, 80, 10);
   
-  // Desenha cesto
   fill(150);
   rect(cestoVerduras.x, cestoVerduras.y, cestoVerduras.width, cestoVerduras.height, 5);
   fill(0);
@@ -630,7 +529,6 @@ function fase4() {
   textAlign(CENTER, CENTER);
   text('🗑️', cestoVerduras.x + cestoVerduras.width/2, cestoVerduras.y + cestoVerduras.height/2);
   
-  // Desenha verduras
   textSize(40);
   for (let verdura of verduras) {
     if (!verdura.colhida) {
@@ -638,7 +536,6 @@ function fase4() {
     }
   }
   
-  // Desenha contador
   fill(255);
   rect(10, 10, 200, 50, 5);
   fill(0);
@@ -646,47 +543,37 @@ function fase4() {
   textAlign(LEFT, CENTER);
   text(`Verduras: ${verdurasColhidas}/10`, 20, 35);
   
-  // Verifica se terminou
   if (verdurasColhidas >= 10) {
-    fase = 5; // Vai para fase final
+    fase = 5;
     tempoFinal = millis();
   }
 }
 
-// Fase Final - Feira
 function faseFinal() {
-  // Céu com fogos
   background(173, 216, 230);
   
-  // Chão
   fill(34, 139, 34);
   rect(0, height - 100, width, 100);
   
-  // Barracas de feira
   fill(200, 0, 0);
   rect(100, height - 200, 100, 100);
   rect(300, height - 180, 80, 80);
   rect(500, height - 220, 120, 120);
   
-  // Pessoas (simplificado)
   fill(255);
   for (let i = 0; i < 5; i++) {
-    ellipse(150 + i*100, height - 150, 20, 20); // Cabeças
+    ellipse(150 + i*100, height - 150, 20, 20);
   }
   
-  // Desenha Maria e Joaquim
   desenharMaria(250, height - 150);
   desenharJoaquim(400, height - 150);
   
-  // Mostra balão de fala atual
   if (falaAtualFinal < falasFaseFinal.length) {
     mostrarBalaoFalaFinal(falasFaseFinal[falaAtualFinal], 150);
     
-    // Mostrar seta para avançar (exceto na última fala)
     if (falaAtualFinal < falasFaseFinal.length - 1) {
       desenharSetaAvancar(width - 100, 230);
     } else {
-      // Na última fala, mostrar fogos de artifício
       if (random() < 0.1) {
         fogos.push({
           x: random(width),
@@ -697,7 +584,6 @@ function faseFinal() {
         });
       }
       
-      // Desenha fogos
       for (let fogo of fogos) {
         fill(fogo.cor);
         noStroke();
@@ -705,10 +591,8 @@ function faseFinal() {
         fogo.tempo += 0.5;
       }
       
-      // Remove fogos antigos
       fogos = fogos.filter(f => f.tempo < f.tamanho);
       
-      // Mensagem final
       fill(255);
       textSize(40);
       textAlign(CENTER, CENTER);
@@ -719,14 +603,13 @@ function faseFinal() {
 
 function mostrarBalaoFalaFinal(texto, y) {
   fill(255);
-  rect(100, y, 600, 120, 20); // balão maior
+  rect(100, y, 600, 120, 20);
   fill(0);
   textSize(22);
   textAlign(LEFT, TOP);
-  text(texto, 120, y + 20, 560, 100); // texto dentro do balão
+  text(texto, 120, y + 20, 560, 100);
 }
 
-// Controle do Enter na fase 1 para captar nome
 function keyPressed() {
   if (fase === 1 && falaAtual === 0) {
     if (keyCode === ENTER) {
@@ -738,36 +621,32 @@ function keyPressed() {
   }
 }
 
-// Avança fala no clique na fase 1 (quando estiver nas falas)
 function mouseClicked() {
-  // Fase 1 - Avançar diálogos
   if (fase === 1 && falaAtual > 0 && falaAtual < falasFase1.length - 1) {
     if (mouseX > width - 130 && mouseX < width - 70 && mouseY > 480 && mouseY < 520) {
       falaAtual++;
       if (falaAtual === 1) {
         nomeJogador = inputNome.value().trim();
         if (!nomeJogador) {
-          falaAtual = 0; // fica na fala 0 se nome vazio
+          falaAtual = 0;
           alert("Por favor, digite seu nome para continuar.");
         }
       }
     }
   } 
-  // Fase 3 - Avançar diálogos ou ir para fase 3.5
   else if (fase === 3) {
     if (mostrandoFala3) {
       if (mouseX > 750 && mouseX < 780 && mouseY > 110 && mouseY < 150) {
         falaAtual3++;
         if (falaAtual3 === falasFase3.length) {
-          mostrandoFala3 = false; // comece animação caminhão
+          mostrandoFala3 = false;
         }
       }
     } else if (fala3Terminou && mouseX > width/2 - 150 && mouseX < width/2 + 150 && 
                mouseY > height/2 - 40 && mouseY < height/2 + 40) {
-      fase = 3.5; // Vai para fase 3.5
+      fase = 3.5;
     }
   }
-  // Fase 3.5 - Avançar diálogos ou começar fase 4
   else if (fase === 3.5 && cenarioMudou) {
     if (falaAtual3_5 < falasFase3_5.length - 1 && 
         mouseX > 650 && mouseX < 680 && mouseY > 170 && mouseY < 210) {
@@ -779,7 +658,6 @@ function mouseClicked() {
       iniciarFase4();
     }
   }
-  // Fase Final - Avançar falas
   else if (fase === 5) {
     if (falaAtualFinal < falasFaseFinal.length) {
       if (mouseX > width - 130 && mouseX < width - 70 && mouseY > 200 && mouseY < 240) {
@@ -797,7 +675,6 @@ function mouseDragged() {
 }
 
 function mousePressed() {
-  // Fase 4 - Selecionar verdura para arrastar
   if (fase === 4) {
     for (let verdura of verduras) {
       if (!verdura.colhida && dist(mouseX, mouseY, verdura.x, verdura.y) < 20) {
@@ -810,7 +687,6 @@ function mousePressed() {
 
 function mouseReleased() {
   if (fase === 4 && arrastandoVerdura) {
-    // Verifica se soltou no cesto
     if (mouseX > cestoVerduras.x && mouseX < cestoVerduras.x + cestoVerduras.width &&
         mouseY > cestoVerduras.y && mouseY < cestoVerduras.y + cestoVerduras.height) {
       arrastandoVerdura.colhida = true;
