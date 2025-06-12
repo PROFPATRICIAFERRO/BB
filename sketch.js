@@ -1,9 +1,9 @@
 // Variáveis globais
-let fase = 0;  // controla a fase atual do jogo
+let fase = 0;
 let nomeJogador = "";
 let inputNome;
 let botaoComecar;
-let textoInicialX;  // posição X do texto animado na tela inicial
+let textoInicialX;
 let tempoPiscar = 0;
 let falaAtual = 0;
 
@@ -20,7 +20,7 @@ const falasFase1 = [
   "Quando conseguir 10 pontos pegando garrafas PET, passamos para a próxima etapa, clique em vamos começar!"
 ];
 
-// --- Variáveis da Fase 2 ---
+// Variáveis da Fase 2
 let pontos = 0;
 let objetosCaindo = [];
 let cestoX;
@@ -46,7 +46,7 @@ let mostrandoFala3 = true;
 let caminhaoVel = 3;
 let fala3Terminou = false;
 
-// Novas variáveis para Fase 3.5
+// Variáveis para Fase 3.5
 let tempoCaminhando = 0;
 let cenarioMudou = false;
 let falasFase3_5 = [
@@ -77,9 +77,9 @@ function setup() {
   createCanvas(800, 600);
   textFont('Arial');
 
-  textoInicialX = width; // começa o texto no canto direito
+  textoInicialX = width;
 
-  // Criar input e botão na Fase 1
+  // Elementos da Fase 1
   inputNome = createInput();
   inputNome.position(width/2 - 100, height/2 + 50);
   inputNome.size(200, 30);
@@ -96,10 +96,9 @@ function setup() {
   });
   botaoComecar.hide();
 
+  // Inicializações gerais
   cestoX = width / 2;
-  
-  // Inicializa variáveis da fase 3
-  caminhaoX = -200; // começa fora da tela à esquerda
+  caminhaoX = -200;
   caminhaoY = height - 120;
 }
 
@@ -119,24 +118,50 @@ function draw() {
   } else if (fase === 5) {
     faseFinal();
   }
+  
+  // Desenha o botão de som
+  desenharBotaoSom();
 }
 
-// Fase 0 - Tela inicial
+function desenharBotaoSom() {
+  let x = width - 60;
+  let y = 20;
+  let tamanho = 40;
+  
+  fill(255, 150);
+  circle(x, y, tamanho);
+  
+  fill(0);
+  textSize(tamanho * 0.8);
+  textAlign(CENTER, CENTER);
+  text('🔊', x, y);
+}
+
 function fase0() {
   background(0, 0, 128);
+  
+  // Logo Agrinho e Colégio
+  fill(255);
+  rect(20, 20, 150, 80);
+  rect(width - 170, 20, 150, 80);
+  
+  fill(0);
+  textSize(16);
+  textAlign(CENTER, CENTER);
+  text("AGRINHO", 95, 60);
+  text("COLÉGIO", width - 95, 60);
+
   fill(255);
   textSize(40);
   textAlign(LEFT, CENTER);
   textStyle(BOLD);
-
-  // Texto animado da direita para esquerda
   text("Agrinho: Campoliga Cresce com Você", textoInicialX, height / 2);
+  
   textoInicialX -= 3;
   if (textoInicialX < -500) {
     textoInicialX = width;
   }
 
-  // Botão "COMEÇAR" piscando
   tempoPiscar++;
   if (tempoPiscar % 60 < 30) {
     fill(255);
@@ -146,35 +171,14 @@ function fase0() {
     textAlign(CENTER, CENTER);
     text("COMEÇAR", width/2, height/2 + 130);
   }
-
-  // Detectar clique no botão
-  if (mouseIsPressed) {
-    if (mouseX > width/2 - 100 && mouseX < width/2 + 100 &&
-        mouseY > height/2 + 100 && mouseY < height/2 + 160) {
-      fase = 1;
-      textoInicialX = width;
-      delayInputShow();
-    }
-  }
 }
 
-function delayInputShow() {
-  setTimeout(() => {
-    inputNome.show();
-    inputNome.value('');
-    inputNome.elt.focus();
-  }, 200);
-}
-
-// Fase 1 - Apresentação e introdução
 function fase1() {
   background(100, 149, 237);
-
   desenharPredios();
 
   fill(150);
   rect(0, height - 100, width, 100);
-
   desenharMaria(150, height - 150);
 
   fill(255);
@@ -272,7 +276,6 @@ function desenharPredios() {
   ellipse(665, height - 180, 100, 80);
 }
 
-// --- Funções da Fase 2 ---
 function iniciarFase2() {
   pontos = 0;
   objetosCaindo = [];
@@ -317,7 +320,6 @@ function fase2() {
       if (obj.x > cestoX - cestoWidth/2 && obj.x < cestoX + cestoWidth/2) {
         pontos += obj.pontos;
         if (pontos < 0) pontos = 0;
-
         objetosCaindo.splice(i, 1);
         criarObjetoCaindo();
       }
@@ -340,7 +342,6 @@ function fase2() {
   }
 }
 
-// Fase 3 - Transporte para o campo
 function iniciarFase3() {
   falaAtual3 = 0;
   mostrandoFala3 = true;
@@ -370,17 +371,14 @@ function fase3() {
   if (!mostrandoFala3) {
     fill(255, 224, 189);
     ellipse(caminhaoX + 75, caminhaoY - 10, 30, 30);
-    
     fill(139, 69, 19);
     arc(caminhaoX + 75, caminhaoY - 20, 30, 30, PI, TWO_PI);
-    
     fill(255);
     ellipse(caminhaoX + 65, caminhaoY - 15, 8, 5);
     ellipse(caminhaoX + 85, caminhaoY - 15, 8, 5);
     fill(0);
     ellipse(caminhaoX + 65, caminhaoY - 15, 3, 3);
     ellipse(caminhaoX + 85, caminhaoY - 15, 3, 3);
-    
     noFill();
     stroke(0);
     strokeWeight(2);
@@ -389,14 +387,12 @@ function fase3() {
 
   if (mostrandoFala3) {
     desenharMaria(150, height - 150);
-    
     fill(255);
     rect(50, 50, 700, 100, 20);
     fill(0);
     textSize(22);
     textAlign(LEFT, TOP);
     text(falasFase3[falaAtual3], 70, 70, 660, 80);
-
     desenharSetaAvancar(750, 130);
   }
 
@@ -415,7 +411,6 @@ function fase3() {
   }
 }
 
-// Fase 3.5 - Maria no campo com Joaquim
 function fase3_5() {
   if (tempoCaminhando < 120) {
     background(135, 206, 250);
@@ -512,7 +507,6 @@ function desenharJoaquim(x, y) {
   rect(x - 25, y - 50, 50, 70, 5);
 }
 
-// Fase 4 - Colheita de verduras
 function iniciarFase4() {
   verduras = [];
   verdurasColhidas = 0;
@@ -561,23 +555,43 @@ function fase4() {
   }
 }
 
-// Fase Final - Feira
 function faseFinal() {
   background(173, 216, 230);
-  
   fill(34, 139, 34);
   rect(0, height - 100, width, 100);
   
-  fill(200, 0, 0);
-  rect(100, height - 200, 100, 100);
-  rect(300, height - 180, 80, 80);
-  rect(500, height - 220, 120, 120);
+  // Feira
+  fill(200, 200, 200, 150);
+  rect(100, 100, 600, 300);
   
-  fill(255);
-  for (let i = 0; i < 5; i++) {
-    ellipse(150 + i*100, height - 150, 20, 20);
+  // Barracas
+  fill(150, 75, 0);
+  rect(150, 150, 150, 100);
+  rect(350, 150, 150, 100);
+  rect(550, 150, 150, 100);
+  
+  // Fogos de artifício
+  if (falaAtualFinal === falasFaseFinal.length - 1) {
+    if (random() < 0.1) {
+      fogos.push({
+        x: random(width),
+        y: random(height/2),
+        cor: color(random(255), random(255), random(255)),
+        tamanho: random(20, 50),
+        tempo: 0
+      });
+    }
+    
+    for (let fogo of fogos) {
+      fill(fogo.cor);
+      noStroke();
+      ellipse(fogo.x, fogo.y, fogo.tamanho - fogo.tempo);
+      fogo.tempo += 0.5;
+    }
+    
+    fogos = fogos.filter(f => f.tempo < f.tamanho);
   }
-  
+
   desenharMaria(250, height - 150);
   desenharJoaquim(400, height - 150);
   
@@ -587,27 +601,10 @@ function faseFinal() {
     if (falaAtualFinal < falasFaseFinal.length - 1) {
       desenharSetaAvancar(width - 100, 230);
     } else {
-      if (random() < 0.1) {
-        fogos.push({
-          x: random(width),
-          y: random(height/2),
-          cor: color(random(255), random(255), random(255)),
-          tamanho: random(20, 50),
-          tempo: 0
-        });
-      }
-      
-      for (let fogo of fogos) {
-        fill(fogo.cor);
-        noStroke();
-        ellipse(fogo.x, fogo.y, fogo.tamanho - fogo.tempo);
-        fogo.tempo += 0.5;
-      }
-      
-      fogos = fogos.filter(f => f.tempo < f.tamanho);
-      
-      fill(255);
-      textSize(40);
+      fill(255, 200);
+      rect(width/2 - 150, height/2 - 40, 300, 80, 20);
+      fill(0);
+      textSize(26);
       textAlign(CENTER, CENTER);
       text("FIM! Obrigada.", width/2, height/2);
     }
@@ -635,6 +632,7 @@ function keyPressed() {
 }
 
 function mouseClicked() {
+  // Fase 1 - Avançar diálogos
   if (fase === 1 && falaAtual > 0 && falaAtual < falasFase1.length - 1) {
     if (mouseX > width - 130 && mouseX < width - 70 && mouseY > 480 && mouseY < 520) {
       falaAtual++;
@@ -642,11 +640,11 @@ function mouseClicked() {
         nomeJogador = inputNome.value().trim();
         if (!nomeJogador) {
           falaAtual = 0;
-          alert("Por favor, digite seu nome para continuar.");
         }
       }
     }
   } 
+  // Fase 3 - Avançar diálogos ou ir para fase 3.5
   else if (fase === 3) {
     if (mostrandoFala3) {
       if (mouseX > 750 && mouseX < 780 && mouseY > 110 && mouseY < 150) {
@@ -660,6 +658,7 @@ function mouseClicked() {
       fase = 3.5;
     }
   }
+  // Fase 3.5 - Avançar diálogos ou começar fase 4
   else if (fase === 3.5 && cenarioMudou) {
     if (falaAtual3_5 < falasFase3_5.length - 1 && 
         mouseX > 650 && mouseX < 680 && mouseY > 170 && mouseY < 210) {
@@ -671,6 +670,7 @@ function mouseClicked() {
       iniciarFase4();
     }
   }
+  // Fase Final - Avançar falas
   else if (fase === 5) {
     if (falaAtualFinal < falasFaseFinal.length) {
       if (mouseX > width - 130 && mouseX < width - 70 && mouseY > 200 && mouseY < 240) {
@@ -708,29 +708,3 @@ function mouseReleased() {
     arrastandoVerdura = null;
   }
 }
-// Função para redimensionamento responsivo
-function windowResized() {
-    const container = document.getElementById('game-container');
-    const aspectRatio = 800 / 600;
-    
-    // Calcula novas dimensões baseadas no container
-    let newWidth = container.clientWidth;
-    let newHeight = newWidth / aspectRatio;
-    
-    // Ajusta se for maior que a altura disponível
-    if (newHeight > window.innerHeight) {
-        newHeight = window.innerHeight;
-        newWidth = newHeight * aspectRatio;
-    }
-    
-    // Aplica as novas dimensões
-    resizeCanvas(newWidth, newHeight);
-    
-    // Centraliza o container
-    container.style.width = `${newWidth}px`;
-    container.style.height = `${newHeight}px`;
-}
-
-// Configura redimensionamento
-window.addEventListener('resize', windowResized);
-windowResized(); // Chama inicialmente
