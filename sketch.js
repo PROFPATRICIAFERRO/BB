@@ -6,7 +6,16 @@ let botaoComecar;
 let textoInicialX;
 let tempoPiscar = 0;
 let falaAtual = 0;
+// Imagens que serão carregadas
+let imgCity, imgFeira, imgAgrinho, imgColegio;
 
+function preload() {
+  // Carrega as imagens necessárias
+  imgCity = loadImage('city.jpg');
+  imgFeira = loadImage('feira.jpg');
+  imgAgrinho = loadImage('agrinho.jpg');
+  imgColegio = loadImage('colegio.jpg');
+}
 // Falas da Fase 1
 const falasFase1 = [
   "Olá! Sou Maria e seja bem-vindo(a), qual é o seu nome?",
@@ -131,7 +140,15 @@ function fase0() {
   if (textoInicialX < -500) {
     textoInicialX = width;
   }
-
+  
+// Exibe logos no topo da tela
+  if (imgColegio) {
+    image(imgColegio, 20, 20, 150, 60); // Canto superior esquerdo
+  }
+  if (imgAgrinho) {
+    image(imgAgrinho, width - 170, 20, 150, 60); // Canto superior direito
+  }
+  
   tempoPiscar++;
   if (tempoPiscar % 60 < 30) {
     fill(255);
@@ -161,10 +178,16 @@ function delayInputShow() {
 }
 
 function fase1() {
-  background(100, 149, 237);
-  desenharPredios();
+  // Fundo com imagem da cidade
+  if (imgCity) {
+    image(imgCity, 0, 0, width, height);
+  } else {
+    background(100, 149, 237); // fallback se imagem não carregar
+    desenharPredios();
+  }
 
-  fill(150);
+  // Desenha chão cinza (faixa na parte inferior)
+  fill(150); // cinza
   rect(0, height - 100, width, 100);
 
   desenharMaria(150, height - 150);
@@ -550,20 +573,24 @@ function fase4() {
 }
 
 function faseFinal() {
-  background(173, 216, 230);
-  
-  fill(34, 139, 34);
-  rect(0, height - 100, width, 100);
-  
-  fill(200, 0, 0);
-  rect(100, height - 200, 100, 100);
-  rect(300, height - 180, 80, 80);
-  rect(500, height - 220, 120, 120);
-  
-  fill(255);
-  for (let i = 0; i < 5; i++) {
-    ellipse(150 + i*100, height - 150, 20, 20);
+  // Fundo com imagem da feira
+  if (imgFeira) {
+    image(imgFeira, 0, 0, width, height);
+  } else {
+    // Céu com fogos (fallback se imagem não carregar)
+    background(173, 216, 230);
+    
+    // Chão
+    fill(34, 139, 34);
+    rect(0, height - 100, width, 100);
+    
+    // Barracas de feira
+    fill(200, 0, 0);
+    rect(100, height - 200, 100, 100);
+    rect(300, height - 180, 80, 80);
+    rect(500, height - 220, 120, 120);
   }
+  
   
   desenharMaria(250, height - 150);
   desenharJoaquim(400, height - 150);
