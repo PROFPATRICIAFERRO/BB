@@ -1,12 +1,146 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <title>Agrinho: Campoliga Cresce com Você</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
-  <link rel="stylesheet" type="text/css" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agrinho: Campoliga Cresce com Você</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #1a1a2e;
+            overflow: hidden;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        #game-container {
+            position: relative;
+            width: 800px;
+            height: 600px;
+        }
+        
+        canvas {
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        
+        #loading {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: rgba(26, 26, 46, 0.9);
+            color: white;
+            z-index: 100;
+            transition: opacity 0.5s;
+        }
+        
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+            margin-bottom: 20px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+        
+        #start-btn {
+            margin-top: 30px;
+            padding: 15px 30px;
+            font-size: 18px;
+            background: linear-gradient(45deg, #4CAF50, #2E7D32);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        #start-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+        }
+    </style>
 </head>
 <body>
-  <script src="sketch.js"></script>
+    <div id="game-container">
+        <div id="loading">
+            <div class="spinner"></div>
+            <h2>Agrinho: Campoliga Cresce com Você</h2>
+            <p>Carregando jogo...</p>
+            <button id="start-btn" class="hidden">Começar Jogo</button>
+        </div>
+        <canvas id="game-canvas"></canvas>
+    </div>
+
+    <script>
+        // Gerenciamento de carregamento
+        document.addEventListener('DOMContentLoaded', () => {
+            const loading = document.getElementById('loading');
+            const startBtn = document.getElementById('start-btn');
+            const canvas = document.getElementById('game-canvas');
+            
+            // Verifica se o p5 já está carregado
+            function checkP5Loaded() {
+                if (typeof p5 !== 'undefined') {
+                    loading.querySelector('p').textContent = 'Jogo carregado!';
+                    startBtn.classList.remove('hidden');
+                } else {
+                    setTimeout(checkP5Loaded, 500);
+                }
+            }
+            
+            // Carrega p5.js dinamicamente
+            const p5Script = document.createElement('script');
+            p5Script.src = 'https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js';
+            p5Script.onload = () => {
+                // Agora carrega o sketch.js
+                const gameScript = document.createElement('script');
+                gameScript.src = 'sketch.js';
+                gameScript.onload = () => {
+                    loading.querySelector('p').textContent = 'Jogo carregado! Clique para começar.';
+                    startBtn.classList.remove('hidden');
+                };
+                document.head.appendChild(gameScript);
+            };
+            document.head.appendChild(p5Script);
+            
+            // Inicia o jogo quando o botão é clicado
+            startBtn.addEventListener('click', () => {
+                loading.style.opacity = '0';
+                setTimeout(() => {
+                    loading.classList.add('hidden');
+                    // Força o redimensionamento se necessário
+                    if (typeof windowResized === 'function') {
+                        windowResized();
+                    }
+                }, 500);
+            });
+            
+            // Inicia a verificação
+            checkP5Loaded();
+        });
+    </script>
 </body>
 </html>
