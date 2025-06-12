@@ -708,3 +708,29 @@ function mouseReleased() {
     arrastandoVerdura = null;
   }
 }
+// Função para redimensionamento responsivo
+function windowResized() {
+    const container = document.getElementById('game-container');
+    const aspectRatio = 800 / 600;
+    
+    // Calcula novas dimensões baseadas no container
+    let newWidth = container.clientWidth;
+    let newHeight = newWidth / aspectRatio;
+    
+    // Ajusta se for maior que a altura disponível
+    if (newHeight > window.innerHeight) {
+        newHeight = window.innerHeight;
+        newWidth = newHeight * aspectRatio;
+    }
+    
+    // Aplica as novas dimensões
+    resizeCanvas(newWidth, newHeight);
+    
+    // Centraliza o container
+    container.style.width = `${newWidth}px`;
+    container.style.height = `${newHeight}px`;
+}
+
+// Configura redimensionamento
+window.addEventListener('resize', windowResized);
+windowResized(); // Chama inicialmente
